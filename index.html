@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proposal</title>
+    <title>Valentine's Day Animation</title>
     <style>
         body {
             background-color: white;
@@ -91,7 +91,7 @@
 </head>
 <body>
     <div class="scene">
-        <div class="stick-figure girl">
+        <div class="stick-figure girl" id="girl">
             <div class="head"></div>
             <div class="body"></div>
         </div>
@@ -104,17 +104,18 @@
     
     <script>
         let boy = document.getElementById("boy");
+        let girl = document.getElementById("girl");
         let speech = document.getElementById("speech");
         
-        function moveBoy(x, callback) {
-            let pos = 10;
+        function moveCharacter(character, x, callback) {
+            let pos = parseFloat(character.style.left) || 10;
             let interval = setInterval(() => {
                 if (pos >= x) {
                     clearInterval(interval);
                     if (callback) callback();
                 } else {
                     pos += 1;
-                    boy.style.left = pos + "vw";
+                    character.style.left = pos + "vw";
                 }
             }, 30);
         }
@@ -130,12 +131,16 @@
             }, delay);
         }
         
-        moveBoy(50, () => {
+        moveCharacter(boy, 50, () => {
             showSpeech("হাই, আই লাব ইউ 💖", boy, 2000, () => {
-                showSpeech("না!", document.querySelector(".girl"), 2000, () => {
-                    moveBoy(80, () => {
-                        showSpeech("হ্যাপি ভ্যালেনটাইনস ডে! পরশু আমার ইনকোর্স এক্সাম! পরতে বসবো বাসায় গিয়ে। ভালো থেকো! বাই. 😔", boy, 3000, () => {
-                            moveBoy(100);
+                showSpeech("না!", girl, 2000, () => {
+                    moveCharacter(boy, 80, () => {
+                        showSpeech("হ্যাপি ভ্যালেনটাইনস ডে! পরশু আমার ইনকোর্স এক্সাম! পরতে বসবো বাসায় গিয়ে। ভালো থেকো! বাই! 😔", boy, 3000, () => {
+                            moveCharacter(boy, 100, () => {
+                                showSpeech("অহ! আমার ও তো পরীক্ষা!", girl, 2000, () => {
+                                    moveCharacter(girl, 100);
+                                });
+                            });
                         });
                     });
                 });
