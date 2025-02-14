@@ -12,7 +12,7 @@
         .scene {
             width: 100vw;
             height: 100vh;
-            position: relative;
+            position: centre;
         }
         .stick-figure {
             width: 50px;
@@ -131,7 +131,7 @@
             }, delay);
         }
         
-        moveCharacter(boy, 50, () => {
+        moveCharacter(boy, 30, () => {
             showSpeech("হাই, আই লাব ইউ 💖", boy, 2000, () => {
                 showSpeech("না!", girl, 2000, () => {
                     moveCharacter(boy, 80, () => {
