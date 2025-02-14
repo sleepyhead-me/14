@@ -2,15 +2,130 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Valentine's Animation</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Day Animation</title>
+    <style>
+        body {
+            background-color: white;
+            overflow: hidden;
+        }
+        .scene {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+        .stick-figure {
+            width: 50px;
+            height: 100px;
+            position: absolute;
+            bottom: 50px;
+        }
+        .girl {
+            left: 70vw;
+        }
+        .boy {
+            left: 10vw;
+        }
+        .head {
+            width: 20px;
+            height: 20px;
+            background-color: black;
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .body {
+            width: 4px;
+            height: 40px;
+            background-color: black;
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .legs, .arms {
+            width: 20px;
+            height: 4px;
+            background-color: black;
+            position: absolute;
+        }
+        .arms {
+            top: 40px;
+        }
+        .legs {
+            top: 60px;
+        }
+        .speech {
+            position: absolute;
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            display: none;
+            max-width: 150px;
+            text-align: center;
+            font-size: 14px;
+            border: 1px solid black;
+        }
+    </style>
 </head>
 <body>
     <div class="scene">
-        <div class="girl">👧</div>
-        <div class="boy">👦<div class="flower">🌸</div></div>
-        <div class="bubble"></div>
+        <div class="stick-figure girl">
+            <div class="head"></div>
+            <div class="body"></div>
+            <div class="arms"></div>
+            <div class="legs"></div>
+        </div>
+        <div class="stick-figure boy" id="boy">
+            <div class="head"></div>
+            <div class="body"></div>
+            <div class="arms"></div>
+            <div class="legs"></div>
+        </div>
+        <div class="speech" id="speech"></div>
     </div>
-    <script src="script.js"></script>
+    
+    <script>
+        let boy = document.getElementById("boy");
+        let speech = document.getElementById("speech");
+        
+        function moveBoy(x, callback) {
+            let pos = 10;
+            let interval = setInterval(() => {
+                if (pos >= x) {
+                    clearInterval(interval);
+                    if (callback) callback();
+                } else {
+                    pos += 1;
+                    boy.style.left = pos + "vw";
+                }
+            }, 30);
+        }
+        
+        function showSpeech(text, target, delay, callback) {
+            speech.innerText = text;
+            speech.style.display = "block";
+            speech.style.left = target.offsetLeft + 10 + "px";
+            speech.style.top = target.offsetTop - 40 + "px";
+            setTimeout(() => {
+                speech.style.display = "none";
+                if (callback) callback();
+            }, delay);
+        }
+        
+        moveBoy(50, () => {
+            showSpeech("I love you 💖", boy, 2000, () => {
+                showSpeech("No.", document.querySelector(".girl"), 2000, () => {
+                    moveBoy(80, () => {
+                        showSpeech("Happy Valentine's Day. My exam is tomorrow. Bye. 😔", boy, 3000, () => {
+                            moveBoy(100);
+                        });
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
