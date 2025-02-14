@@ -8,17 +8,11 @@
         body {
             background-color: white;
             overflow: hidden;
-            margin: 0;
-            padding: 0;
         }
         .scene {
             width: 100vw;
             height: 100vh;
             position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: row;
         }
         .stick-figure {
             width: 50px;
@@ -93,17 +87,6 @@
             font-size: 14px;
             border: 1px solid black;
         }
-        /* Responsive Styles */
-        @media (max-width: 600px) {
-            .scene {
-                flex-direction: column;
-                justify-content: center;
-                align-items: center;
-            }
-            .stick-figure {
-                bottom: 10vh;
-            }
-        }
     </style>
 </head>
 <body>
@@ -155,8 +138,7 @@
                         showSpeech("হ্যাপি ভ্যালেনটাইনস ডে! পরশু আমার ইনকোর্স এক্সাম! পরতে বসবো বাসায় গিয়ে। ভালো থেকো! বাই! 😔", boy, 3000, () => {
                             moveCharacter(boy, 100, () => {
                                 showSpeech("অহ! আমার ও তো পরীক্ষা!", girl, 2000, () => {
-                                    // Move the girl in the opposite direction
-                                    moveCharacter(girl, 5); // Move girl back towards left
+                                    moveCharacter(girl, -100);
                                 });
                             });
                         });
