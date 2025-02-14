@@ -2,29 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Valentine's Day Animation</title>
     <style>
         body {
             background-color: white;
             overflow: hidden;
+            margin: 0;
+            height: 100vh;
         }
         .scene {
-            width: 100vw;
+            width: 100%;
             height: 100vh;
             position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
         }
         .stick-figure {
             width: 50px;
             height: 100px;
             position: absolute;
             bottom: 50px;
+            transform: translateX(-50%);
         }
         .girl {
-            left: 70vw;
+            left: 60%;
         }
         .boy {
-            left: 10vw;
+            left: 40%;
         }
         .head {
             width: 20px;
@@ -86,6 +92,29 @@
             text-align: center;
             font-size: 14px;
             border: 1px solid black;
+            bottom: 150px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+            word-wrap: break-word;
+        }
+        .valentine-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 24px;
+            color: #ff4081;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            opacity: 0;
+            animation: fadeIn 2s forwards;
+            animation-delay: 10s;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
@@ -100,45 +129,49 @@
             <div class="body"></div>
         </div>
         <div class="speech" id="speech"></div>
+        <div class="valentine-text">Happy Valentine's Day! 💖</div>
     </div>
-    
+
     <script>
         let boy = document.getElementById("boy");
         let girl = document.getElementById("girl");
         let speech = document.getElementById("speech");
         
-        function moveCharacter(character, x, callback) {
-            let pos = parseFloat(character.style.left) || 10;
-            let interval = setInterval(() => {
-                if (pos >= x) {
+        function moveCharacter(character, targetX, callback) {
+            const isBoy = character === boy;
+            const startX = parseFloat(character.style.left) || (isBoy ? 40 : 60);
+            const step = isBoy ? 1 : -1;
+            
+            let currentX = startX;
+            const interval = setInterval(() => {
+                if ((isBoy && currentX >= targetX) || (!isBoy && currentX <= targetX)) {
                     clearInterval(interval);
                     if (callback) callback();
                 } else {
-                    pos += 1;
-                    character.style.left = pos + "vw";
+                    currentX += step;
+                    character.style.left = currentX + "%";
                 }
             }, 30);
         }
-        
-        function showSpeech(text, target, delay, callback) {
+
+        function showSpeech(text, delay, callback) {
             speech.innerText = text;
             speech.style.display = "block";
-            speech.style.left = target.offsetLeft + 10 + "px";
-            speech.style.top = target.offsetTop - 40 + "px";
             setTimeout(() => {
                 speech.style.display = "none";
                 if (callback) callback();
             }, delay);
         }
-        
+
+        // Animation sequence
         moveCharacter(boy, 50, () => {
-            showSpeech("হাই, আই লাব ইউ 💖", boy, 2000, () => {
-                showSpeech("না!", girl, 2000, () => {
+            showSpeech("হাই, আই লাব ইউ 💖", 2000, () => {
+                showSpeech("না!", 2000, () => {
                     moveCharacter(boy, 80, () => {
-                        showSpeech("হ্যাপি ভ্যালেনটাইনস ডে! পরশু আমার ইনকোর্স এক্সাম! পরতে বসবো বাসায় গিয়ে। ভালো থেকো! বাই! 😔", boy, 3000, () => {
+                        showSpeech("হ্যাপি ভ্যালেনটাইনস ডে! পরশু আমার ইনকোর্স এক্সাম! পরতে বসবো বাসায় গিয়ে। ভালো থেকো! বাই! 😔", 3000, () => {
                             moveCharacter(boy, 100, () => {
-                                showSpeech("অহ! আমার ও তো পরীক্ষা!", girl, 2000, () => {
-                                    moveCharacter(girl, 100);
+                                showSpeech("অহ! আমার ও তো পরীক্ষা!", 2000, () => {
+                                    moveCharacter(girl, 20);
                                 });
                             });
                         });
