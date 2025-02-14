@@ -27,10 +27,10 @@
             transform: translateX(-50%);
         }
         .girl {
-            left: 60%;
+            left: 120%; /* Start off-screen right */
         }
         .boy {
-            left: 40%;
+            left: -20%; /* Start off-screen left */
         }
         .head {
             width: 20px;
@@ -42,16 +42,7 @@
             left: 50%;
             transform: translateX(-50%);
         }
-        .girl .head::after {
-            content: "";
-            width: 10px;
-            height: 10px;
-            background-color: black;
-            border-radius: 50%;
-            position: absolute;
-            top: -2px;
-            left: -10px;
-        }
+        .girl .head::after,
         .girl .head::before {
             content: "";
             width: 10px;
@@ -60,8 +51,9 @@
             border-radius: 50%;
             position: absolute;
             top: -2px;
-            right: -10px;
         }
+        .girl .head::after { left: -10px; }
+        .girl .head::before { right: -10px; }
         .girl .body {
             width: 0;
             height: 0;
@@ -93,10 +85,9 @@
             font-size: 14px;
             border: 1px solid black;
             bottom: 150px;
-            left: 50%;
-            transform: translateX(-50%);
             z-index: 1;
             word-wrap: break-word;
+            filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.2));
         }
         .valentine-text {
             position: absolute;
@@ -109,7 +100,7 @@
             text-align: center;
             opacity: 0;
             animation: fadeIn 2s forwards;
-            animation-delay: 10s;
+            animation-delay: 13s;
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
         @keyframes fadeIn {
@@ -133,52 +124,67 @@
     </div>
 
     <script>
-        let boy = document.getElementById("boy");
-        let girl = document.getElementById("girl");
-        let speech = document.getElementById("speech");
+        const boy = document.getElementById("boy");
+        const girl = document.getElementById("girl");
+        const speech = document.getElementById("speech");
         
-        function moveCharacter(character, targetX, callback) {
-            const isBoy = character === boy;
-            const startX = parseFloat(character.style.left) || (isBoy ? 40 : 60);
-            const step = isBoy ? 1 : -1;
-            
-            let currentX = startX;
-            const interval = setInterval(() => {
-                if ((isBoy && currentX >= targetX) || (!isBoy && currentX <= targetX)) {
-                    clearInterval(interval);
-                    if (callback) callback();
-                } else {
-                    currentX += step;
-                    character.style.left = currentX + "%";
-                }
-            }, 30);
+        function moveCharacter(character, targetX, duration = 3000) {
+            return new Promise(resolve => {
+                const startX = parseFloat(character.style.left) || 
+                             (character === boy ? -20 : 120);
+                const distance = targetX - startX;
+                const startTime = Date.now();
+                
+                const animate = () => {
+                    const elapsed = Date.now() - startTime;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const currentX = startX + (distance * progress);
+                    character.style.left = `${currentX}%`;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        resolve();
+                    }
+                };
+                requestAnimationFrame(animate);
+            });
         }
 
-        function showSpeech(text, delay, callback) {
-            speech.innerText = text;
-            speech.style.display = "block";
-            setTimeout(() => {
-                speech.style.display = "none";
-                if (callback) callback();
-            }, delay);
+        function showSpeech(text, owner, duration = 2000) {
+            return new Promise(resolve => {
+                speech.innerText = text;
+                speech.style.display = "block";
+                
+                // Position relative to speaking character
+                const target = owner === 'boy' ? boy : girl;
+                const rect = target.getBoundingClientRect();
+                speech.style.left = `${rect.left + (rect.width/2)}px`;
+                speech.style.bottom = `${window.innerHeight - rect.top + 20}px`;
+                
+                setTimeout(() => {
+                    speech.style.display = "none";
+                    resolve();
+                }, duration);
+            });
         }
 
         // Animation sequence
-        moveCharacter(boy, 50, () => {
-            showSpeech("হাই, আই লাব ইউ 💖", 2000, () => {
-                showSpeech("না!", 2000, () => {
-                    moveCharacter(boy, 80, () => {
-                        showSpeech("হ্যাপি ভ্যালেনটাইনস ডে! পরশু আমার ইনকোর্স এক্সাম! পরতে বসবো বাসায় গিয়ে। ভালো থেকো! বাই! 😔", 3000, () => {
-                            moveCharacter(boy, 100, () => {
-                                showSpeech("অহ! আমার ও তো পরীক্ষা!", 2000, () => {
-                                    moveCharacter(girl, 0);
-                                });
-                            });
-                        });
-                    });
-                });
-            });
-        });
+        (async function mainAnimation() {
+            await moveCharacter(boy, 40, 2000);
+            await showSpeech("হাই, আই লাব ইউ 💖", 'boy');
+            await moveCharacter(girl, 60, 2000);
+            await showSpeech("না!", 'girl');
+            await moveCharacter(boy, 80, 3000);
+            await showSpeech("হ্যাপি ভ্যালেনটাইনস ডে! পরশু আমার ইনকোর্স এক্সাম! পরতে বসবো বাসায় গিয়ে। ভালো থেকো! বাই! 😔", 'boy', 4000);
+            await moveCharacter(boy, 100, 2000);
+            await showSpeech("অহ! আমার ও তো পরীক্ষা!", 'girl');
+            await moveCharacter(girl, 20, 2000);
+            
+            // Final cleanup
+            boy.style.display = 'none';
+            girl.style.display = 'none';
+        })();
     </script>
 </body>
 </html>
