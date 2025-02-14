@@ -1,0 +1,49 @@
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffe6f2;
+}
+
+.scene {
+    position: relative;
+    width: 800px;
+    height: 400px;
+    overflow: hidden;
+}
+
+.girl, .boy {
+    position: absolute;
+    bottom: 50px;
+    font-size: 50px;
+    transition: 1s ease-in-out;
+}
+
+.girl { left: 50%; }
+
+.boy {
+    left: -100px;
+}
+
+.flower {
+    position: absolute;
+    right: -20px;
+    top: 10px;
+    font-size: 30px;
+    opacity: 0;
+    transition: 0.5s;
+}
+
+.bubble {
+    position: absolute;
+    background: white;
+    border: 2px solid #000;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-family: Arial;
+    opacity: 0;
+    transition: 0.3s;
+    white-space: nowrap;
+}
